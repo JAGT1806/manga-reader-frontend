@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -8,5 +9,15 @@ import { Component } from '@angular/core';
   styleUrl: './auth.component.css'
 })
 export class AuthComponent {
+  action : 'login' | 'register' = 'login'; // Valor inicial para 'login'
 
+  constructor(private route: ActivatedRoute) { 
+    this.route.queryParams.subscribe(params => {
+      this.action = params['action'] || 'login';
+    })
+  }
+
+  toggleAction(action: 'login' | 'register') {
+    
+  }
 }
