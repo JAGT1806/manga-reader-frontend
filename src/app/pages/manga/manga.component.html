@@ -1,1 +1,77 @@
-<p>manga works!</p>
+<!-- manga.component.html -->
+<div class="container mt-4">
+    <!-- Sección de información del manga -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <img *ngIf="manga" [src]="manga.coverUrl" class="img-fluid rounded shadow" alt="Cover">
+      </div>
+      
+      <div class="col-md-8">
+        <h2 class="mb-3">{{ manga?.title }}</h2>
+        <div class="card">
+          <div class="card-body">
+            <p class="card-text">{{ manga?.description?.['en'] || 'No description available' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2">Cargando capítulos...</p>
+    </div>
+  
+    <!-- Acordeón de Capítulos -->
+    <div class="accordion mt-4" id="volumeAccordion">
+      <div class="accordion-item" *ngFor="let volume of volumes; let i = index">
+        <h2 class="accordion-header" [id]="'heading' + i">
+          <button 
+            class="accordion-button" 
+            type="button" 
+            [class.collapsed]="i !== 0"
+            data-bs-toggle="collapse" 
+            [attr.data-bs-target]="'#collapse' + i"
+            [attr.aria-expanded]="i === 0"
+            [attr.aria-controls]="'collapse' + i">
+            <span class="me-2">Volumen {{ volume.volumen }}</span>
+            <span class="badge bg-secondary">{{ volume.chapters.length }} capítulos</span>
+          </button>
+        </h2>
+        
+        <div 
+          [id]="'collapse' + i" 
+          class="accordion-collapse collapse" 
+          [class.show]="i === 0"
+          [attr.aria-labelledby]="'heading' + i" 
+          data-bs-parent="#volumeAccordion">
+          <div class="accordion-body p-0">
+            <div class="list-group list-group-flush">
+              <button 
+                *ngFor="let chapter of volume.chapters"
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                (click)="navigateToChapter(chapter.id)">
+                <div>
+                  <strong>Capítulo {{ chapter.atributos.capitulo || '?' }}</strong>
+                  <span *ngIf="chapter.atributos.titulo" class="ms-2 text-muted">
+                    {{ chapter.atributos.titulo }}
+                  </span>
+                </div>
+                <div>
+                  <span class="badge bg-primary me-2">{{ chapter.atributos.idioma }}</span>
+                  <span class="badge bg-info">{{ chapter.atributos.paginas }} páginas</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mensaje cuando no hay capítulos -->
+    <div *ngIf="!loading && volumes.length === 0" class="alert alert-info mt-4">
+      No se encontraron capítulos para este manga.
+    </div>
+  </div>

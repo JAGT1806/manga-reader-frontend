@@ -1,7 +1,7 @@
-.card {
-    @apply bg-white rounded shadow-md overflow-hidden transition-transform duration-200;
-}
 
-.card:hover {
-    @apply transform scale-105;
-}
+
+.pagination-ellipsis {
+    margin: 0 10px;
+    font-weight: bold;
+    cursor: default; /* No clickable */
+  }

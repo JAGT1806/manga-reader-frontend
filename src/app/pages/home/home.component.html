@@ -1,16 +1,15 @@
 <main class="container mt-5">
     <h1 class="text-center mb-5">Los más recientes</h1>
   
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
+
     <div class="row">
       <div *ngFor="let manga of mangas" class="col-md-4 mb-4 d-flex align-items-stretch">
-        <div class="card h-100" style="width: 100%;">
-          <img [src]="manga.coverUrl" class="card-img-top" alt="{{ manga.title }}" />
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ manga.title }}</h5>
-            <a [routerLink]="['/manga', manga.id]" class="btn btn-primary mt-auto">Leer más</a>
-          </div>
-        </div>
+        <app-mang-card [manga]="manga"></app-mang-card>
       </div>
     </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-pagination>
+  
   </main>
   

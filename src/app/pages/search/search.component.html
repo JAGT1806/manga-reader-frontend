@@ -1,1 +1,30 @@
-<p>search works!</p>
+<main class="container mt-5">
+    <h1 class="text-center mb-5">Resultados de búsqueda</h1>
+    
+    <p *ngIf="searchQuery">Mostrando resultados para: <strong>{{ searchQuery }}</strong></p>
+
+    <app-pagination 
+      [currentPage]="currentPage" 
+      [totalPages]="totalPages" 
+      (pageChange)="onPageChange($event)"
+      class="mb-4">
+    </app-pagination>
+
+    <div class="row">
+      <div *ngFor="let manga of mangas" class="col-md-4 mb-4 d-flex align-items-stretch">
+        <app-mang-card [manga]="manga"></app-mang-card>
+      </div>
+    </div>
+
+    <div *ngIf="noResults" class="text-center">
+      <img src="https://i.ibb.co/Lr13MHx/manga-no-encontrado-con-un-personaje-de-anume-chibi.jpg" alt="No Manga Found" class="mb-3 img-fluid" />
+      <p class="text-muted">No se encontraron mangas para "{{ searchQuery }}".</p>
+    </div>
+
+    <app-pagination 
+      *ngIf="!noResults"
+      [currentPage]="currentPage" 
+      [totalPages]="totalPages" 
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  </main>
