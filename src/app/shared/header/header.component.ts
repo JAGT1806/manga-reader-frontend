@@ -27,8 +27,19 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private settingsService: SettingsService
-  ) {}
+    private settingsService: SettingsService,
+  ) {
+    // Aplicar el tema inicial inmediatamente
+    const initialSettings = this.settingsService.getSettings();
+    document.documentElement.setAttribute('data-bs-theme', initialSettings.theme);
+
+
+    // Usar effect para mantener sincronizado el tema
+    effect(() => {
+      const currentTheme = this.settings().theme;
+      document.documentElement.setAttribute('data-bs-theme', currentTheme);
+    });
+  }
 
   ngOnInit() {
     // Inicializar settings

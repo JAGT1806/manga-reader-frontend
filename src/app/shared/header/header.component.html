@@ -2,7 +2,7 @@
     <div class="container-fluid">
       <!-- Logo y título -->
       <div class="d-flex logo">
-        <a class="nav-link offcanvas-header" routerLink="/home" routerLinkActive="active">
+        <a class="nav-link offcanvas-header" routerLink="/home" [queryParams]="{page: 1}"  routerLinkActive="active">
           <img src="https://i.ibb.co/vDbpSQn/logo.png" alt="Icon" width="80" height="80">
           <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Manga World</h5>
         </a>
@@ -58,7 +58,7 @@
             <div class="form-check form-switch mb-2">
               <input class="form-check-input" type="checkbox" [checked]="settings().theme === 'dark'"
                 (change)="toggleTheme()" id="themeSwitch">
-              <label class="form-check-label" for="themeSwitch">Modo oscuro</label>
+              <label class="form-check-label" for="themeSwitch" i18n>Dark Theme</label>
             </div>
           </div>
   
