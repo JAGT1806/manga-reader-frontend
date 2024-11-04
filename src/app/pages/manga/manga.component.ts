@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChapterFeed, Manga } from '../../interfaces/manga.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../services/manga.service';
-import { forkJoin } from 'rxjs';
+import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import { SettingsService } from '../../services/settings.service';
+import { AppSettings } from '../../interfaces/settings.interface';
 
 @Component({
   selector: 'app-manga',
@@ -12,53 +14,84 @@ import { forkJoin } from 'rxjs';
   templateUrl: './manga.component.html',
   styleUrl: './manga.component.css'
 })
-export class MangaComponent implements OnInit {
+export class MangaComponent implements OnInit, OnDestroy {
   manga: Manga | null = null;
   volumes: { volumen: string; chapters: ChapterFeed[] }[] = [];
   loading: boolean = false;
-
+  settings: AppSettings;
+  private subscriptions = new Subscription();
+  
   constructor(
     private mangaService: MangaService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    const mangaId = this.route.snapshot.paramMap.get('id')!;
-    this.loadMangaDetails(mangaId);
-    this.loadAllMangaFeed(mangaId);
+    private router: Router,
+    private settingsService: SettingsService
+  ) {
+    // Initialize settings with default values
+    this.settings = {
+      dataSaver: false,
+      nfswEnabled: false,
+      theme: 'light'
+    };
   }
 
-  private loadMangaDetails(id: string): void {
-    this.mangaService.getMangaById(id).subscribe((response) => {
-      this.manga = response.data;
-    });
+  ngOnInit(): void {
+    const mangaId = this.route.snapshot.paramMap.get('id');
+    if (!mangaId) {
+      this.router.navigate(['/home']);
+      return;
+    }
+
+    // Combine manga details and settings observables
+    this.subscriptions.add(
+      combineLatest([
+        this.mangaService.getMangaById(mangaId),
+        this.settingsService.settings$
+      ]).subscribe({
+        next: ([mangaResponse, newSettings]) => {
+          this.manga = mangaResponse.data;
+          this.settings = newSettings;
+          this.loadAllMangaFeed(mangaId);
+        },
+        error: (error) => {
+          console.error('Error loading manga details:', error);
+          this.router.navigate(['/home']);
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   private loadAllMangaFeed(id: string): void {
+    if (this.loading) return;
+    
     this.loading = true;
-    this.mangaService.getAllMangaFeed(id).subscribe({
-      next: (chapters) => {
-        this.volumes = this.groupChaptersByVolume(chapters);
-        this.sortVolumes();
-      },
-      error: (error) => {
-        console.error('Error loading manga feed:', error);
-        // Aquí podrías agregar manejo de errores
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
+    
+    this.subscriptions.add(
+      this.mangaService.getAllMangaFeed(id, this.settings.nfswEnabled)
+        .subscribe({
+          next: (chapters) => {
+            this.volumes = this.groupChaptersByVolume(chapters);
+            this.sortVolumes();
+          },
+          error: (error) => {
+            console.error('Error loading manga feed:', error);
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        })
+    );
   }
 
   private groupChaptersByVolume(chapters: ChapterFeed[]): { volumen: string; chapters: ChapterFeed[] }[] {
     const volumeMap = new Map<string, ChapterFeed[]>();
     const NO_VOLUME = 'Sin Volumen';
 
-    // Agrupar capítulos por volumen
     chapters.forEach((chapter) => {
-      // Determinar el volumen usando null coalescing
       const volumeKey = chapter.atributos.volumen ?? NO_VOLUME;
       
       if (!volumeMap.has(volumeKey)) {
@@ -67,7 +100,6 @@ export class MangaComponent implements OnInit {
       volumeMap.get(volumeKey)!.push(chapter);
     });
 
-    // Convertir el Map a un array y ordenar los capítulos dentro de cada volumen
     return Array.from(volumeMap.entries()).map(([volumen, chapters]) => ({
       volumen,
       chapters: this.sortChapters(chapters)

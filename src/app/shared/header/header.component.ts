@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-header',
@@ -15,17 +16,59 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   searchQuery: string = '';
+  isSettingsOpen = signal(false);
+  settings = signal({
+    dataSaver: false,
+    nfswEnabled: false,
+    theme: 'light' as 'light' | 'dark'
+  });
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private settingsService: SettingsService
+  ) {}
 
-  onSearch() {
+  ngOnInit() {
+    // Inicializar settings
+    this.settings.set(this.settingsService.getSettings());
+
+    // Suscribirse a cambios en settings
+    this.settingsService.settings$.subscribe(
+      newSettings => this.settings.set(newSettings)
+    );
+  }
+
+  onSearch(event: Event): void {
+    event.preventDefault();
     if (this.searchQuery.trim()) {
-      this.router.navigate(['/search'], { queryParams: { title: this.searchQuery } });
+      this.router.navigate(['/search'], { 
+        queryParams: { 
+          title: this.searchQuery,
+          nsfw: this.settings().nfswEnabled 
+        } 
+      });
     } else {
       this.router.navigate(['/home']);
     }
   }
 
+  toggleDataSaver(): void {
+    this.settingsService.updateSettings({
+      dataSaver: !this.settings().dataSaver
+    });
+  }
+
+  toggleNSFW(): void {
+    this.settingsService.updateSettings({
+      nfswEnabled: !this.settings().nfswEnabled
+    });
+  }
+
+  toggleTheme(): void {
+    const newTheme = this.settings().theme === 'light' ? 'dark' : 'light';
+    this.settingsService.updateSettings({ theme: newTheme });
+    document.documentElement.setAttribute('data-bs-theme', newTheme);
+  }
 }

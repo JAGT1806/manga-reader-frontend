@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Manga } from '../../interfaces/manga.interface';
 import { MangaService } from '../../services/manga.service';
 import { MangCardComponent } from "../../components/mang-card/mang-card.component";
 import { PaginationComponent } from "../../components/pagination/pagination.component";
+import { SettingsService } from '../../services/settings.service';
+import { AppSettings } from '../../interfaces/settings.interface';
+import { combineLatest, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -18,7 +21,9 @@ import { PaginationComponent } from "../../components/pagination/pagination.comp
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
+  
+
   mangas: Manga[] = [];
   noResults = false;
   searchQuery: string = '';
@@ -26,40 +31,65 @@ export class SearchComponent implements OnInit {
   pageSize: number = 12;
   totalPages: number = 0;
   isLoading: boolean = false;
+  settings: AppSettings;
+  
+  private subscriptions = new Subscription();
 
   constructor(
     private mangaService: MangaService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private settingsService: SettingsService
+  ) {
+    // Initialize settings with default values
+    this.settings = {
+      dataSaver: false,
+      nfswEnabled: false,
+      theme: 'light'
+    };
+  }
 
   ngOnInit(): void {
-    // Suscribirse a los cambios en los parámetros de la URL
-    this.route.queryParams.subscribe(params => {
-      this.searchQuery = params['title'] || '';
-      this.currentPage = parseInt(params['page']) || 1;
+    // Combine settings and query params observables
+    this.subscriptions.add(
+      combineLatest([
+        this.route.queryParams,
+        this.settingsService.settings$
+      ]).subscribe(([params, newSettings]) => {
+        this.settings = newSettings;
+        this.searchQuery = params['title'] || '';
+        this.currentPage = parseInt(params['page']) || 1;
 
-      if (!this.searchQuery.trim()) {
-        this.router.navigate(['/home']);
-      } else {
-        this.fetchMangas();
-      }
-    });
+        if (!this.searchQuery.trim()) {
+          this.router.navigate(['/home']);
+        } else {
+          this.fetchMangas();
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   fetchMangas(): void {
     if (this.isLoading) return;
-    
+
     this.isLoading = true;
     const offset = (this.currentPage - 1) * this.pageSize;
 
-    this.mangaService.getAllMangas(this.searchQuery, offset, this.pageSize).subscribe({
+    this.mangaService.getAllMangas(
+      this.searchQuery,
+      offset,
+      this.pageSize,
+      this.settings.nfswEnabled,
+    ).subscribe({
       next: (response) => {
         this.mangas = response.data;
         this.noResults = this.mangas.length === 0;
         this.totalPages = Math.ceil(response.total / this.pageSize);
         
-        // Actualizar la URL con los parámetros de búsqueda y página
         this.updateUrlParams();
       },
       error: (error) => {
@@ -81,7 +111,6 @@ export class SearchComponent implements OnInit {
   }
 
   private updateUrlParams(): void {
-    // Actualizar la URL sin recargar la página
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
