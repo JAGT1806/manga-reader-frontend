@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ChapterFeed, Manga } from '../../interfaces/manga.interface';
+import { ChapterFeed, Manga } from '../../models/interfaces/manga.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../services/manga.service';
 import { combineLatest, forkJoin, Subscription } from 'rxjs';
 import { SettingsService } from '../../services/settings.service';
-import { AppSettings } from '../../interfaces/settings.interface';
+import { AppSettings } from '../../models/interfaces/settings.interface';
 
 @Component({
   selector: 'app-manga',

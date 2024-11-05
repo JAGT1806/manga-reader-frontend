@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Language } from '../models/enums/language.enum';
 
 interface AppSettings {
   dataSaver: boolean;
   nfswEnabled: boolean;
   theme: 'light' | 'dark';
+  language: Language
 }
 
 
@@ -17,7 +19,8 @@ export class SettingsService {
   private defaultSettings: AppSettings = {
     dataSaver: false,
     nfswEnabled: false,
-    theme: 'light'
+    theme: 'light',
+    language : Language.EN
   }    
 
   private settingsSubject = new BehaviorSubject<AppSettings>(

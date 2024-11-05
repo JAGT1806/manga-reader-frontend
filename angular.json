@@ -5,8 +5,14 @@
   "projects": {
     "manga-reader-frontend": {
       "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {"es-CO": "src/locale/messages.es.xlf"}
+        "sourceLocale": {
+          "code": "en-US",
+          "baseHref": "/en/"
+        },
+        "locales": {
+          "es-CO": {"translation":"src/locale/messages.es.xlf", "baseHref": "/es/"},
+          "fr": {"translation":"src/locale/messages.fr.xlf", "baseHref": "/fr/"}
+        }
       },
       "projectType": "application",
       "schematics": {},
@@ -17,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "localize": ["es-CO"],
+            "localize": ["es-CO", "fr"],
             "outputPath": "dist/manga-reader-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -57,6 +63,21 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "en": {
+              "localize": ["en-US"],
+              "baseHref": "/en/",
+              "i18nMissingTranslation": "error"
+            },
+            "es-CO": {
+              "localize": ["es-CO"],
+              "baseHref": "/es/",
+              "i18nMissingTranslation": "error"
+            },
+            "fr": {
+              "localize": ["fr"],
+              "baseHref": "/fr/",
+              "i18nMissingTranslation": "error"
             }
           },
           "defaultConfiguration": "production"
@@ -69,6 +90,15 @@
             },
             "development": {
               "buildTarget": "manga-reader-frontend:build:development"
+            },
+            "en": {
+              "buildTarget": "manga-reader-frontend:build:en"
+            },
+            "es-CO": {
+              "buildTarget": "manga-reader-frontend:build:es-CO"
+            },
+            "fr": {
+              "buildTarget": "manga-reader-frontend:build:fr"
             }
           },
           "defaultConfiguration": "development"

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Manga } from '../../interfaces/manga.interface';
+import { Manga } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../services/manga.service';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,7 @@ import { MangCardComponent } from "../../components/mang-card/mang-card.componen
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { SettingsService } from '../../services/settings.service';
 import { Subscription } from 'rxjs';
-import { AppSettings } from '../../interfaces/settings.interface';
+import { AppSettings } from '../../models/interfaces/settings.interface';
 
 @Component({
   selector: 'app-home',

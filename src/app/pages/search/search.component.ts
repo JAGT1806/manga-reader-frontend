@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Manga } from '../../interfaces/manga.interface';
+import { Manga } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../services/manga.service';
 import { MangCardComponent } from "../../components/mang-card/mang-card.component";
 import { PaginationComponent } from "../../components/pagination/pagination.component";
 import { SettingsService } from '../../services/settings.service';
-import { AppSettings } from '../../interfaces/settings.interface';
+import { AppSettings } from '../../models/interfaces/settings.interface';
 import { combineLatest, Subscription } from 'rxjs';
 
 @Component({

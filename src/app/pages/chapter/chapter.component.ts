@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ChapterMangaResponse } from '../../interfaces/manga.interface';
+import { ChapterMangaResponse } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../services/manga.service';
 
 @Component({

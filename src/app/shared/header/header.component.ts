@@ -1,8 +1,16 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { Component, effect, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { SettingsService } from '../../services/settings.service';
+import { Language } from '../../models/enums/language.enum';
+
+import localeFr from '@angular/common/locales/fr';
+import localeEs from '@angular/common/locales/es';
+import { LocalizationService } from '../../services/localization.service';
+
+registerLocaleData(localeFr);
+registerLocaleData(localeEs);
 
 @Component({
   selector: 'app-header',
@@ -17,6 +25,8 @@ import { SettingsService } from '../../services/settings.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
+  selectedLanguage= Language.EN;
+  Language = Language;
   searchQuery: string = '';
   isSettingsOpen = signal(false);
   settings = signal({
@@ -28,7 +38,10 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     private settingsService: SettingsService,
+    private localizationService: LocalizationService
   ) {
+
+    this.selectedLanguage = this.localizationService.getCurrentLanguage();
     // Aplicar el tema inicial inmediatamente
     const initialSettings = this.settingsService.getSettings();
     document.documentElement.setAttribute('data-bs-theme', initialSettings.theme);
@@ -82,4 +95,11 @@ export class HeaderComponent implements OnInit {
     this.settingsService.updateSettings({ theme: newTheme });
     document.documentElement.setAttribute('data-bs-theme', newTheme);
   }
+
+  changeLanguage(language : Language) {
+    this.selectedLanguage = language;
+    this.settingsService.updateSettings({ language });
+    this.localizationService.navigateToLanguage(language);
+  }
+
 }

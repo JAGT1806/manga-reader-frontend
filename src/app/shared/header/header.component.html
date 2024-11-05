@@ -61,7 +61,38 @@
               <label class="form-check-label" for="themeSwitch" i18n>Dark Theme</label>
             </div>
           </div>
-  
+          
+          <div class="dropdown">
+            <button 
+              class="btn btn-secondary dropdown-toggle" 
+              type="button" 
+              id="languageDropdown" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+            >
+              {{ selectedLanguage === Language.EN ? 'English' : 
+                 selectedLanguage === Language.ES ? 'Español' : 
+                 'Français' }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+              <li>
+                <a class="dropdown-item" href="#" (click)="$event.preventDefault(); changeLanguage(Language.EN)">
+                  English
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" (click)="$event.preventDefault(); changeLanguage(Language.ES)">
+                  Español
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" (click)="$event.preventDefault(); changeLanguage(Language.FR)">
+                  Français
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <!-- Área de usuario -->
           <div class="user-area">
             <div class="dropdown dropup">

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Manga } from '../../interfaces/manga.interface';
+import { Manga } from '../../models/interfaces/manga.interface';
 
 @Component({
   selector: 'app-mang-card',
