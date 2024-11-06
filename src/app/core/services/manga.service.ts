@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { EMPTY, expand, map, Observable, reduce } from 'rxjs';
-import { ChapterFeed, ChapterMangaResponse, FeedMangaResponse, ListMangasResponse, Manga, MangaResponse } from '../models/interfaces/manga.interface';
+import { ChapterFeed, ChapterMangaResponse, FeedMangaResponse, ListMangasResponse, Manga, MangaResponse } from '../../models/interfaces/manga.interface';
 
 
 @Injectable({

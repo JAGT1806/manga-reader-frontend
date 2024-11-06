@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChapterFeed, Manga } from '../../models/interfaces/manga.interface';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MangaService } from '../../services/manga.service';
+import { MangaService } from '../../core/services/manga.service';
 import { combineLatest, forkJoin, Subscription } from 'rxjs';
-import { SettingsService } from '../../services/settings.service';
+import { SettingsService } from '../../core/services/settings.service';
 import { AppSettings } from '../../models/interfaces/settings.interface';
 
 @Component({

@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Manga } from '../../models/interfaces/manga.interface';
-import { MangaService } from '../../services/manga.service';
+import { MangaService } from '../../core/services/manga.service';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MangCardComponent } from "../../components/mang-card/mang-card.component";
 import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { SettingsService } from '../../services/settings.service';
+import { SettingsService } from '../../core/services/settings.service';
 import { Subscription } from 'rxjs';
 import { AppSettings } from '../../models/interfaces/settings.interface';
 

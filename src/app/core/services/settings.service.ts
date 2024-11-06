@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Language } from '../models/enums/language.enum';
+import { Language } from '../../models/enums/language.enum';
 
 interface AppSettings {
   dataSaver: boolean;

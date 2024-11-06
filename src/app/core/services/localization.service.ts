@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Language } from '../models/enums/language.enum';
+import { Language } from '../../models/enums/language.enum';
 
 interface LanguageConfig {
   port: number;
@@ -29,6 +29,9 @@ export class LocalizationService {
       prefix: '/fr'
     }
   };
+
+  private currentLanguageSubject = new BehaviorSubject<Language>(this.getCurrentLanguage());
+  currentLanguage$ = this.currentLanguageSubject.asObservable();
 
   getLanguageConfig(language: Language): LanguageConfig {
     return this.languageConfigs[language];

@@ -2,12 +2,12 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import { Component, effect, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { SettingsService } from '../../services/settings.service';
+import { SettingsService } from '../../core/services/settings.service';
 import { Language } from '../../models/enums/language.enum';
 
 import localeFr from '@angular/common/locales/fr';
 import localeEs from '@angular/common/locales/es';
-import { LocalizationService } from '../../services/localization.service';
+import { LocalizationService } from '../../core/services/localization.service';
 
 registerLocaleData(localeFr);
 registerLocaleData(localeEs);

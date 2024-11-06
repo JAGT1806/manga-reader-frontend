@@ -47,6 +47,7 @@ manga-reader-frontend/
 ├── src/                   // Carpeta principal de código fuente
 │   ├── app/               // Contenedor principal de la aplicación y sus subcomponentes
 │   │   ├── components/    // Componentes reutilizables en diferentes partes de la app
+│   │   ├── core/          // Servicios globales, interceptores, guardias, etc
 │   │   ├── models/        // Interfaces, clases y enums utilizados en toda la aplicación
 │   │   ├── pages/         // Componentes que representan vistas o páginas completas
 │   │   ├── services/      // Servicios para la lógica y peticiones HTTP
