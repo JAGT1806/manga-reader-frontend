@@ -19,9 +19,9 @@
     <!-- Loading spinner -->
     <div *ngIf="loading" class="text-center my-4">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Cargando...</span>
+        <span class="visually-hidden" i18n>Cargando...</span>
       </div>
-      <p class="mt-2">Cargando capítulos...</p>
+      <p class="mt-2" i18n>Cargando capítulos...</p>
     </div>
   
     <!-- Acordeón de Capítulos -->
@@ -71,7 +71,7 @@
     </div>
   
     <!-- Mensaje cuando no hay capítulos -->
-    <div *ngIf="!loading && volumes.length === 0" class="alert alert-info mt-4">
+    <div *ngIf="!loading && volumes.length === 0" class="alert alert-info mt-4" i18n>
       No se encontraron capítulos para este manga.
     </div>
   </div>

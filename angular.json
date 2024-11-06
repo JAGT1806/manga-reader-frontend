@@ -6,11 +6,11 @@
     "manga-reader-frontend": {
       "i18n": {
         "sourceLocale": {
-          "code": "en-US",
-          "baseHref": "/en/"
+          "code": "es",
+          "baseHref": "/es/"
         },
         "locales": {
-          "es-CO": {"translation":"src/locale/messages.es.xlf", "baseHref": "/es/"},
+          "en-US": {"translation":"src/locale/messages.en.xlf", "baseHref": "/en/"},
           "fr": {"translation":"src/locale/messages.fr.xlf", "baseHref": "/fr/"}
         }
       },
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "localize": ["es-CO", "fr"],
+            "localize": ["en-US", "fr"],
             "outputPath": "dist/manga-reader-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -64,14 +64,14 @@
               "extractLicenses": false,
               "sourceMap": true
             },
-            "en": {
-              "localize": ["en-US"],
-              "baseHref": "/en/",
+            "es": {
+              "localize": ["es"],
+              "baseHref": "/es/",
               "i18nMissingTranslation": "error"
             },
-            "es-CO": {
-              "localize": ["es-CO"],
-              "baseHref": "/es/",
+            "en-US": {
+              "localize": ["en-US"],
+              "baseHref": "/en/",
               "i18nMissingTranslation": "error"
             },
             "fr": {
@@ -91,11 +91,11 @@
             "development": {
               "buildTarget": "manga-reader-frontend:build:development"
             },
-            "en": {
-              "buildTarget": "manga-reader-frontend:build:en"
+            "es": {
+              "buildTarget": "manga-reader-frontend:build:es"
             },
-            "es-CO": {
-              "buildTarget": "manga-reader-frontend:build:es-CO"
+            "en-US": {
+              "buildTarget": "manga-reader-frontend:build:en-US"
             },
             "fr": {
               "buildTarget": "manga-reader-frontend:build:fr"

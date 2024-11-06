@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration=en --port 4200",
-    "start:es": "ng serve --configuration=es-CO --port 4201",
+    "start": "ng serve --configuration=es --port 4200",
+    "start:es": "ng serve --configuration=en-US --port 4201",
     "start:fr": "ng serve --configuration=fr --port 4202",
     "build": "ng build",
     "build all": "ng build --localize",

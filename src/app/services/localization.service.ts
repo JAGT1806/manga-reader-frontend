@@ -13,15 +13,15 @@ interface LanguageConfig {
 })
 export class LocalizationService {
   private languageConfigs: Record<Language, LanguageConfig> = {
-    [Language.EN]: {
+    [Language.ES]: {
       port: 4200,
       baseUrl: 'http://localhost:4200',
-      prefix: '/en'
+      prefix: '/es'
     },
-    [Language.ES]: {
+    [Language.EN]: {
       port: 4201,
       baseUrl: 'http://localhost:4201',
-      prefix: '/es'
+      prefix: '/en'
     },
     [Language.FR]: {
       port: 4202,

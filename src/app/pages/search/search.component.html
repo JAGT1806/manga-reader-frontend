@@ -1,7 +1,7 @@
 <main class="container mt-5">
-  <h1 class="text-center mb-5">Resultados de búsqueda</h1>
+  <h1 class="text-center mb-5" i18n>Resultados de búsqueda</h1>
   
-  <p *ngIf="searchQuery">Mostrando resultados para: <strong>{{ searchQuery }}</strong></p>
+  <p *ngIf="searchQuery" i18n>Mostrando resultados para: <strong>{{ searchQuery }}</strong></p>
 
   <app-pagination 
     [currentPage]="currentPage" 
@@ -18,7 +18,7 @@
 
   <div *ngIf="noResults" class="text-center">
     <img src="https://i.ibb.co/Lr13MHx/manga-no-encontrado-con-un-personaje-de-anume-chibi.jpg" alt="No Manga Found" class="mb-3 img-fluid" />
-    <p class="text-muted">No se encontraron mangas para "{{ searchQuery }}".</p>
+    <p class="text-muted" i18n>No se encontraron mangas para "{{ searchQuery }}".</p>
   </div>
 
   <app-pagination 
