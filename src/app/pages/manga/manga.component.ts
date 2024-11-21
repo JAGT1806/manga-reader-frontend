@@ -6,6 +6,8 @@ import { MangaService } from '../../core/services/manga.service';
 import { combineLatest, forkJoin, Subscription } from 'rxjs';
 import { SettingsService } from '../../core/services/settings.service';
 import { AppSettings } from '../../models/interfaces/settings.interface';
+import { AuthService } from '../../core/services/auth.service';
+import { FavoritesService } from '../../core/services/favorites.service';
 
 @Component({
   selector: 'app-manga',
@@ -18,6 +20,7 @@ export class MangaComponent implements OnInit, OnDestroy {
   manga: Manga | null = null;
   volumes: { volumen: string; chapters: ChapterFeed[] }[] = [];
   loading: boolean = false;
+  isFavorite: boolean = false;
   settings: AppSettings;
   private subscriptions = new Subscription();
   
@@ -25,6 +28,8 @@ export class MangaComponent implements OnInit, OnDestroy {
     private mangaService: MangaService,
     private route: ActivatedRoute,
     private router: Router,
+    private authService: AuthService,
+    private favoriteService: FavoritesService,
     private settingsService: SettingsService
   ) {
     // Initialize settings with default values
@@ -52,6 +57,7 @@ export class MangaComponent implements OnInit, OnDestroy {
           this.manga = mangaResponse.data;
           this.settings = newSettings;
           this.loadAllMangaFeed(mangaId);
+          this.checkFavoriteStatus(mangaId);
         },
         error: (error) => {
           console.error('Error loading manga details:', error);
@@ -76,6 +82,7 @@ export class MangaComponent implements OnInit, OnDestroy {
           next: (chapters) => {
             this.volumes = this.groupChaptersByVolume(chapters);
             this.sortVolumes();
+            this.loading = false;
           },
           error: (error) => {
             console.error('Error loading manga feed:', error);
@@ -128,4 +135,65 @@ export class MangaComponent implements OnInit, OnDestroy {
       return volA - volB;
     });
   }
+
+  private checkFavoriteStatus(mangaId: string): void {
+    if (this.authService.isAuthenticated()) {
+      this.subscriptions.add(
+        this.favoriteService.checkFavoriteExists(mangaId)
+          .subscribe(exists => this.isFavorite = exists)
+      );
+    }
+  }
+
+  toggleFavorite(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    if (!this.manga) return;
+
+    if (this.isFavorite) {
+      this.removeFavorite();
+    } else {
+      this.addFavorite();
+    }
+  }
+
+  private addFavorite(): void {
+    if (!this.manga) return;
+
+    this.subscriptions.add(
+      this.favoriteService.addFavorite(
+        this.manga.id, 
+        this.manga.title, 
+        this.manga.coverUrl || '',
+      ).subscribe({
+        next: () => {
+          this.isFavorite = true;
+        },
+        error: (error) => {
+          console.error('Error adding favorite:', error);
+        }
+      })
+    );
+  }
+
+  private removeFavorite(): void {
+    if (!this.manga) return;
+
+    this.subscriptions.add(
+      this.favoriteService.removeFavorite(this.manga.id)
+        .subscribe({
+          next: () => {
+            this.isFavorite = false;
+          },
+          error: (error) => {
+            console.error('Error removing favorite:', error);
+          }
+        })
+    );
+  }
+
+  
 }

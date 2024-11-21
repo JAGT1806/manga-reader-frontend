@@ -1,0 +1,66 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Seleccionar imagen de perfil</h5>
+        <button type="button" 
+                class="btn-close" 
+                aria-label="Close"
+                (click)="onCancel()">
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+
+
+        <!-- Grid de imágenes -->
+        <div *ngIf="!loading" class="row g-3">
+          <div *ngFor="let image of currentPageImages" 
+               class="col-6 col-sm-4 col-md-3">
+            <div class="image-card position-relative"
+                 [class.selected]="selectedImage?.id === image.id"
+                 (click)="selectImage(image)">
+              <img [src]="image.url" 
+                   [alt]="'Image ' + image.id"
+                   class="w-75 h-75 object-fit-cover d-inline-block rounded-circle border border-3 border-primary overflow-hidden"
+                   >
+              <div *ngIf="selectedImage?.id === image.id" 
+                   class="selected-overlay">
+                <i class="bi bi-check-circle-fill fs-2"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <div *ngIf="totalPages > 1" class="mt-4">
+          <app-pagination
+            [currentPage]="currentPage"
+            [totalPages]="totalPages"
+            (pageChange)="onPageChange($event)">
+          </app-pagination>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" 
+                class="btn btn-outline-secondary" 
+                (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="button" 
+                class="btn btn-primary" 
+                [disabled]="!selectedImage"
+                (click)="onConfirm()">
+          Seleccionar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

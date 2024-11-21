@@ -15,7 +15,7 @@ export interface Manga {
     id: string;
     title: string;
     image: string;
-    description: {[key: string]: string};
+    description: string;
     coverId: string;
     fileName: string;
     coverUrl?: string;

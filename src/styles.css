@@ -1,11 +1,45 @@
 html {
-    height: 100vh;
+    height: 100%;
 }
 
 .mt-8 {
-    margin-top: 8rem;
+    margin-top: 6rem;
 }
 
 /*body {
     background-color: #0a144c;
 }*/
+
+.background-pattern {
+    background-image: url('/assets/img/fondo.png');
+    background-size: cover; /* Asegura que la imagen cubra toda el área */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que se repita */
+    height: calc(100vh - 6rem); /* Ajusta según la altura del header */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.background-code {
+    background-image: url('/assets/img/code.png');
+    background-size: cover; /* Asegura que la imagen cubra toda el área */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que se repita */
+    height: calc(100vh - 6rem); /* Ajusta según la altura del header */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+  /* Aseguramos que el contenedor del formulario no herede el tema oscuro */
+.form-container {
+    color: rgba(12, 2, 2, 0.823) !important; /* Texto oscuro */
+}
+
+/* También puedes especificar estilos adicionales para que los controles del formulario no usen el tema oscuro */
+.form-container .form-control {
+    background-color: #fff !important;
+    border-color: #ccc !important;
+    color: #333 !important;
+}

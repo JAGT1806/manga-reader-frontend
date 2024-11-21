@@ -37,25 +37,32 @@
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="noDescription" datatype="html">
+        <source>Sin descripción</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/manga/manga.component.html</context>
+          <context context-type="linenumber">15,17</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1878944583384618422" datatype="html">
         <source>Cargando...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/manga/manga.component.html</context>
-          <context context-type="linenumber">22,23</context>
+          <context context-type="linenumber">26,27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3000588320622725763" datatype="html">
         <source>Cargando capítulos...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/manga/manga.component.html</context>
-          <context context-type="linenumber">24,25</context>
+          <context context-type="linenumber">28,29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8284017198273782352" datatype="html">
         <source> No se encontraron capítulos para este manga. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/pages/manga/manga.component.html</context>
-          <context context-type="linenumber">75,76</context>
+          <context context-type="linenumber">79,80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7614288959772800116" datatype="html">

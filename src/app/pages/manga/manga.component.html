@@ -2,19 +2,34 @@
 <div class="container mt-4">
     <!-- Sección de información del manga -->
     <div class="row mb-4">
-      <div class="col-md-4 d-flex justify-content-center align-items-center">
+      <div class="col-md-4 d-flex justify-content-center align-items-center position-relative">
         <img *ngIf="manga" [src]="manga.coverUrl" class="img-fluid rounded shadow text-center" alt="Cover">
+        <button 
+        *ngIf="manga" 
+        class="btn btn-danger position-absolute top-0 end-0 m-2"
+        (click)="toggleFavorite()"
+        aria-label="Agregar o quitar de favoritos"
+      >
+        <i class="bi" [ngClass]="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+      </button>
       </div>
+      
       
       <div class="col-md-8">
         <h2 class="mb-3">{{ manga?.title }}</h2>
         <div class="card">
           <div class="card-body">
-            <p class="card-text">{{ manga?.description?.['en'] || 'No description available' }}</p>
+            <p class="card-text">
+              {{ manga?.description }}
+              <span *ngIf="!manga?.description" i18n="@@noDescription">Sin descripción</span>
+            </p>
+            
           </div>
         </div>
       </div>
     </div>
+
+    
   
     <!-- Loading spinner -->
     <div *ngIf="loading" class="text-center my-4">

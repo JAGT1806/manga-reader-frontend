@@ -8,6 +8,9 @@ import { Language } from '../../models/enums/language.enum';
 import localeFr from '@angular/common/locales/fr';
 import localeEs from '@angular/common/locales/es';
 import { LocalizationService } from '../../core/services/localization.service';
+import { AuthService } from '../../core/services/auth.service';
+import { LoginResponse } from '../../models/interfaces/auth.interface';
+import { NavigationService } from '../../core/services/navigation.service';
 
 registerLocaleData(localeFr);
 registerLocaleData(localeEs);
@@ -29,6 +32,7 @@ export class HeaderComponent implements OnInit {
   Language = Language;
   searchQuery: string = '';
   isSettingsOpen = signal(false);
+  currentUser = signal<LoginResponse | null>(null);
   settings = signal({
     dataSaver: false,
     nfswEnabled: false,
@@ -38,7 +42,9 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     private settingsService: SettingsService,
-    private localizationService: LocalizationService
+    private localizationService: LocalizationService,
+    private authService: AuthService,
+    private navigationService: NavigationService
   ) {
 
     this.selectedLanguage = this.localizationService.getCurrentLanguage();
@@ -61,6 +67,11 @@ export class HeaderComponent implements OnInit {
     // Suscribirse a cambios en settings
     this.settingsService.settings$.subscribe(
       newSettings => this.settings.set(newSettings)
+    );
+
+    // Suscribirse a los cambios del usuario actual
+    this.authService.currentUser$.subscribe(
+      user => this.currentUser.set(user)
     );
   }
 
@@ -102,4 +113,8 @@ export class HeaderComponent implements OnInit {
     this.localizationService.navigateToLanguage(language);
   }
 
+  onLogout(): void {
+    this.navigationService.handleLogout();
+    //this.router.navigate(['/login']);
+  }
 }

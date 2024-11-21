@@ -1,0 +1,101 @@
+<div class="form-container d-flex align-items-center justify-content-center background-pattern" >
+    <div class="card shadow-lg border-0 p-4 rounded-4" style="max-width: 400px; background-color: rgba(255, 255, 255, 0.95);">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h2 class="text-dark fw-bold fs-4">
+          Inciar sesión
+        </h2>
+        <p class="text-dark small">
+          Ingresa tus credenciales para iniciar sesión
+        </p>
+      </div>
+  
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email Field -->
+        <div class="mb-3 form-container">
+          <label for="email" class="form-label small fw-semibold text-dark">Correo</label>
+          <div class="position-relative">
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [ngClass]="{'is-invalid': email?.invalid && email?.touched}"
+              placeholder="your.email@example.com"
+            />
+            <!-- Email Error Messages -->
+            <div *ngIf="email?.invalid && email?.touched" class="invalid-feedback small">
+              <span *ngIf="email?.errors?.['required']">El email es necesario</span>
+              <span *ngIf="email?.errors?.['pattern']">Por favor ingresar un email valido</span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Password Field -->
+        <div class="mb-3">
+          <label for="password" class="form-label small fw-semibold text-dark">Contraseña</label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              [ngClass]="{'is-invalid': password?.invalid && password?.touched}"
+              placeholder="••••••••"
+            />
+            <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="togglePasswordVisibility()"
+            >
+            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+            </button>
+            
+            <!-- Password Error Messages -->
+            <div *ngIf="password?.invalid && password?.touched" class="invalid-feedback small">
+              <span *ngIf="password?.errors?.['required']">La contraseña es necesaria</span>
+              <span *ngIf="password?.errors?.['minlength']">La contraseña mínimo debe tener 6 caracteres</span>
+            </div>
+            
+          </div>
+        </div>
+  
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger small py-2">
+          {{ errorMessage }}
+        </div>
+
+        <div class="text-center small mt-3">
+          <a routerLink="/auth/register" class="text-primary text-decoration-none">
+            Registrarse
+          </a>
+        </div>
+
+        <div class="text-center small mt-3">
+          <a routerLink="/auth/verify-email" class="text-primary text-decoration-none">
+            Validar cuenta
+          </a>
+        </div>
+  
+        <div class="text-center small mt-3">
+          <a routerLink="/auth/reset-password" class="text-primary text-decoration-none">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+  
+        <!-- Submit Button -->
+        <div class="mt-4">
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid || isLoading"
+            class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+          >
+            <span *ngIf="!isLoading">Inciar sesión</span>
+            <div *ngIf="isLoading" class="spinner-border spinner-border-sm ms-2"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

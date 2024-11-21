@@ -14,8 +14,6 @@ import { AppSettings } from '../../models/interfaces/settings.interface';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    RouterLinkActive,
     MangCardComponent,
     PaginationComponent
 ],
