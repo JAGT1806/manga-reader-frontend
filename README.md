@@ -41,8 +41,8 @@ manga-reader-frontend/
 ├── package.json           // Definición de dependencias y scripts
 ├── tsconfig.json          // Configuración de TypeScript
 ├── README.md              // Documentación del proyecto
-├── dist/                  // Carpeta generada al ejecutar `ng build --localize`
-│   └── browser/           // Vistas generadas para cada idioma configurado en i18n
+├── dist/                  
+│   └── browser/           
 ├── public/                // Archivos públicos (imágenes, archivos estáticos)
 ├── src/                   // Carpeta principal de código fuente
 │   ├── app/               // Contenedor principal de la aplicación y sus subcomponentes
@@ -59,7 +59,6 @@ manga-reader-frontend/
 │   │   └── app.route.ts         // Configuración de rutas de la aplicación
 │   ├── assets/            // Elementos multimedia como imágenes, fuentes, etc.
 │   ├── environments/      // Configuraciones de entorno (producción, desarrollo, etc.)
-│   ├── locale/            // Archivos de localización (i18n) para cada idioma
 │   ├── index.html         // Archivo HTML principal de la aplicación
 │   ├── main.ts            // Punto de entrada de la aplicación donde se inicializa Angular
 │   └── styles.css         // Estilos CSS globales
@@ -74,12 +73,7 @@ Para el uso adecuado o más optimo, usar estas versiones:
 
 ## Puertos del proyecto
 
-Todos se van a basar en localhost, debido a la implementación de i18n, cada idioma se ejecutará en puertos diferentes, recuerda ejecutar primero `ng build --localize` para construir las otras vistas del i18n. Para arrancarlo se ingresa el comando `npm run serve:all`, lo cuál ejecutará el aplicativo por tres puertos, los cuales son:
-- `4200`:  Este puerto es el por defecto, pero en este caso se ejecutará el idioma original o el idioma de "inglés".
-- `4201`: Manejará el idioma de "español".
-- `4202`: Manejará el idioma de "francés".
-
-Todo esto fue configurado en el fichero `package.json`  ``
+- 4200: Puerto por defecto que utiliza angular
 ## Dependencias del proyecto
 
-Para utilizar la versión más reciente (18.2.9), se ejecutó `npm install -g @angular/cli`, posteriormente se le añadió un paquete necesario para su ejecución, por lo cuál se ejecutará este comando: `ng add @angular/localize` para el i18n y se ejecutó `npm install --save-dev concurrently` para el tema de la ejecución de diversos serve de Angular.
+Para utilizar la versión más reciente (18.2.9), se ejecutó `npm install -g @angular/cli`, posteriormente se le añadió un paquete necesario para su ejecución, por lo cuál se ejecutará este comando: `ng add @ngx-translate/core` para el i18n.
