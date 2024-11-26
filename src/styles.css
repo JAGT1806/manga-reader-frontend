@@ -4,6 +4,7 @@ html {
 
 .mt-8 {
     margin-top: 6rem;
+    padding: 10px !important;
 }
 
 /*body {

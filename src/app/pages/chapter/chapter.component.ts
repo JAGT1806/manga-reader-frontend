@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ChapterMangaResponse } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../core/services/manga.service';
+import { SettingsService } from '../../core/services/settings.service';
+import { LocalizationService } from '../../core/services/localization.service';
+import { Language } from '../../models/enums/language.enum';
 
 @Component({
   selector: 'app-chapter',
@@ -13,6 +16,7 @@ import { MangaService } from '../../core/services/manga.service';
   styleUrl: './chapter.component.css'
 })
 export class ChapterComponent {
+  selectedLanguage= signal<Language>(Language.ES);
   pages: string[] = [];
   loadedPages: boolean[] = [];
   currentPage: number = 0;
@@ -25,10 +29,31 @@ export class ChapterComponent {
   constructor(
     private mangaService: MangaService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private settingsService: SettingsService, 
+    private localizationService: LocalizationService
+  ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
+  }
 
   ngOnInit(): void {
+    this.useLowQuality = this.settingsService.getSettings().dataSaver;
+
+    this.settingsService.settings$.subscribe(settings => {
+      this.useLowQuality = settings.dataSaver;
+      
+      // Si ya has cargado los datos originales, actualiza las páginas
+      if (this.originalData) {
+        this.pages = this.useLowQuality ? 
+          this.originalData.dataSaver : 
+          this.originalData.data;
+        this.loadedPages = new Array(this.pages.length).fill(false);
+        this.preloadedImages.clear();
+        this.scrollToPage(this.currentPage);
+        this.preloadNextImages(this.currentPage);
+      }
+    });
+
     this.loadChapter();
   }
 

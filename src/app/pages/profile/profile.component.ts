@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ChangePasswordRequest, ImageDTO, UpdateUserRequest } from '../../models/interfaces/user.interface';
 import { ImgSelectorComponent } from "../../components/img-selector/img-selector.component";
 import { ChangePasswordModalComponent } from "../../components/change-password-modal/change-password-modal.component";
+import { NavigationService } from '../../core/services/navigation.service';
 
 @Component({
   selector: 'app-profile',
@@ -23,6 +24,8 @@ export class ProfileComponent {
   loading = false;
   showImageSelector = false;
   showPasswordModal = false;
+  canDeleteUser = true;
+  isDeleting= false;
   currentImageUrl: string | null = null;
   selectedImageId: number | null = null;
 
@@ -30,6 +33,7 @@ export class ProfileComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private authService: AuthService,
+    private navigationService: NavigationService,
     private router: Router
   ) {
     this.profileForm = this.fb.group({
@@ -115,6 +119,27 @@ export class ProfileComponent {
         // Mostrar mensaje de error
       }
     });
+  }
+
+  onDelete() {
+    this.submitted = false;
+    this.loading = false;
+    console.log("eliminar usuario");
+
+    if (confirm(`¿Estás seguro de que deseas eliminar al usuario ${this.user?.username}.}?`)) {
+      this.isDeleting = true;
+      this.userService.deleteUser(this.user!.idUser).subscribe({
+        next: () => {
+          this.navigationService.handleLogout();
+          this.loading = false;
+          this.isDeleting = false;
+        },
+        error: () => {
+          this.loading = false;
+          this.isDeleting = false;
+        }
+      });
+    }
   }
 
 }

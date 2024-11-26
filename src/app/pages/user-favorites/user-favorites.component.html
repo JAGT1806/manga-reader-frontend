@@ -1,0 +1,47 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <button class="btn btn-outline-secondary me-2" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i> Volver
+        </button>
+        <h2 class="d-inline-block">
+          Favoritos de {{user?.username || 'Usuario'}}
+        </h2>
+      </div>
+    </div>
+
+    <div *ngIf="favorites.length === 0" class="alert alert-info text-center">
+      Este usuario no tiene mangas marcados como favoritos.
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4" *ngIf="favorites.length > 0">
+      <div class="col" *ngFor="let favorite of favorites">
+        <div class="position-relative">
+          <app-mang-card 
+            [manga]="{
+              id: favorite.idManga,
+              title: favorite.nameManga,
+              description: '',
+              image: '',
+              coverId: '',
+              fileName: '',
+              coverUrl: favorite.urlImage
+            }"
+          ></app-mang-card>
+          <button *ngIf="canDeleteFavorites"
+                  class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                  (click)="onDeleteFavorite(favorite)"
+                  [disabled]="isDeleting">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <app-pagination 
+      *ngIf="totalPages > 1"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </div>

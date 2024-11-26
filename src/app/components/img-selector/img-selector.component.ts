@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { ImageDTO } from '../../models/interfaces/user.interface';
 import { UserService } from '../../core/services/user.service';
 import { PaginationComponent } from "../pagination/pagination.component";
+import { Language } from '../../models/enums/language.enum';
+import { LocalizationService } from '../../core/services/localization.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-img-selector',
   standalone: true,
-  imports: [CommonModule, PaginationComponent],
+  imports: [CommonModule, PaginationComponent, TranslatePipe],
   templateUrl: './img-selector.component.html',
   styleUrl: './img-selector.component.css'
 })
@@ -15,6 +18,7 @@ export class ImgSelectorComponent {
   @Output() select = new EventEmitter<ImageDTO>();
   @Output() cancel = new EventEmitter<void>();
 
+  selectedLanguage= signal<Language>(Language.ES);
   images: ImageDTO[] = [];
   currentPage: number = 1;
   totalPages: number = 0;
@@ -23,7 +27,8 @@ export class ImgSelectorComponent {
   selectedImage: ImageDTO | null = null;
   currentPageImages: ImageDTO[] = [];
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private localizationService: LocalizationService) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.loadImages();
   }
 
@@ -33,7 +38,7 @@ export class ImgSelectorComponent {
 
   private loadImages(page: number = 1) {
     this.loading = true;
-    const offset = (page - 1) * this.pageSize;
+    const offset = page - 1;
 
     this.userService.getImages(offset, this.pageSize).subscribe({
       next: (response) => {

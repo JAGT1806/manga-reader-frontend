@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangePasswordRequest } from '../../models/interfaces/user.interface';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { finalize } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { LocalizationService } from '../../core/services/localization.service';
+import { Language } from '../../models/enums/language.enum';
 
 @Component({
   selector: 'app-change-password-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './change-password-modal.component.html',
   styleUrl: './change-password-modal.component.css'
 })
@@ -17,6 +20,7 @@ export class ChangePasswordModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<ChangePasswordRequest>();
 
+  selectedLanguage= signal<Language>(Language.ES);
   passwordForm: FormGroup;
   submitted = false;
   loading = false;
@@ -24,8 +28,11 @@ export class ChangePasswordModalComponent {
 
   constructor(private fb: FormBuilder,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private translate: TranslateService,
+    private localizationService: LocalizationService
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -68,7 +75,9 @@ export class ChangePasswordModalComponent {
     // Obtener el ID del usuario actual
     const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser?.user?.idUser) {
-      this.errorMessage = 'Usuario no encontrado';
+      this.translate.get('USER.NOT.FOUND').subscribe((text: string) => this.errorMessage = text);
+  
+      
       this.loading = false;
       return;
     }
@@ -90,7 +99,7 @@ export class ChangePasswordModalComponent {
           // Aquí puedes agregar un mensaje de éxito si lo deseas
         },
         error: (error) => {
-          this.errorMessage = error.message || 'Error al cambiar la contraseña';
+          this.errorMessage = error.message || this.translate.get("ERROR.CHANGE.PASSWORD");
           this.loading = false;
         }
       });

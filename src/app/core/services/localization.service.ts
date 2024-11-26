@@ -1,63 +1,71 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { Language } from '../../models/enums/language.enum';
-
-interface LanguageConfig {
-  port: number;
-  baseUrl: string;
-  prefix: string;
-}  
+import { TranslateService } from '@ngx-translate/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalizationService {
-  private languageConfigs: Record<Language, LanguageConfig> = {
-    [Language.ES]: {
-      port: 4200,
-      baseUrl: 'http://localhost:4200',
-      prefix: '/es'
-    },
-    [Language.EN]: {
-      port: 4201,
-      baseUrl: 'http://localhost:4201',
-      prefix: '/en'
-    },
-    [Language.FR]: {
-      port: 4202,
-      baseUrl: 'http://localhost:4202',
-      prefix: '/fr'
-    }
-  };
-
-  private currentLanguageSubject = new BehaviorSubject<Language>(this.getCurrentLanguage());
+  private currentLanguageSubject = new BehaviorSubject<Language>(Language.ES);
   currentLanguage$ = this.currentLanguageSubject.asObservable();
 
-  getLanguageConfig(language: Language): LanguageConfig {
-    return this.languageConfigs[language];
+  constructor(
+    private translate: TranslateService,
+    private router: Router
+  ) { 
+    translate.addLangs(['en', 'es', 'fr']);
+    translate.setDefaultLang('es');
+
+    const initialLang = this.getInitialLanguage();
+    this.setLanguage(initialLang);
+
+    // Suscribirse a los cambios de ruta para mantener sincronizado el idioma
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      const urlLang = this.getLanguageFromUrl();
+      if (urlLang && urlLang !== this.currentLanguageSubject.value) {
+        this.setLanguage(urlLang);
+      }
+    });
+  }
+
+  private getInitialLanguage(): Language {
+    const urlLang = this.getLanguageFromUrl();
+    const storedLang = localStorage.getItem('selectedLanguage') as Language;
+
+    if (urlLang && Object.values(Language).includes(urlLang)) {
+      return urlLang;
+    }
+    
+    if (storedLang && Object.values(Language).includes(storedLang)) {
+      return storedLang;
+    }
+
+    return Language.ES;
+  }
+
+  private getLanguageFromUrl(): Language {
+    const path = window.location.pathname;
+    const lang = path.split('/')[1];
+    return Object.values(Language).includes(lang as Language) 
+      ? lang as Language 
+      : Language.ES;
+  }
+
+  setLanguage(language: Language) {
+    if (!Object.values(Language).includes(language)) {
+      language = Language.ES;
+    }
+
+    this.currentLanguageSubject.next(language);
+    this.translate.use(language);
+    localStorage.setItem('selectedLanguage', language);
   }
 
   getCurrentLanguage(): Language {
-    const port = window.location.port;
-    const found = Object.entries(this.languageConfigs).find(([_, config]) => 
-      config.port.toString() === port
-    );
-    return found ? found[0] as Language : Language.EN;
-  }
-
-  navigateToLanguage(language: Language) {
-    const config = this.languageConfigs[language];
-    const currentPath = window.location.pathname;
-    const currentSearch = window.location.search;
-
-    const pathSegments = currentPath.split('/').filter(segment =>
-      segment !== 'en' && segment !== 'es' && segment !== 'fr' && segment !== ''
-    );
-    // Reconstruir la ruta
-    const newPath = pathSegments.length > 0 ? `/${pathSegments.join('/')}` : '/home';
-    
-    // Construir la nueva URL completa
-    const newUrl = `${config.baseUrl}${config.prefix}${newPath}${currentSearch}`;
-    window.location.href = newUrl;
+    return this.currentLanguageSubject.value;
   }
 }

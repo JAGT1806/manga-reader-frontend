@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { ErrorResponse } from '../../../models/interfaces/error.interface';
-import { ResetPasswordRequest } from '../../../models/interfaces/auth.interface';
+import { Language } from '../../../models/enums/language.enum';
+import { LocalizationService } from '../../../core/services/localization.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslatePipe],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent {
+  selectedLanguage= signal<Language>(Language.ES);
   resetForm: FormGroup;
   isLoading = false;
   isRequestingCode = false;
@@ -31,8 +33,11 @@ export class ResetPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private localizationService: LocalizationService,
+    private router: Router,
+    private translate: TranslateService
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.resetForm = this.fb.group({
       email: ['', [
         Validators.required,
@@ -61,7 +66,7 @@ export class ResetPasswordComponent {
         this.authService.forgotPassword({ email: this.email.value }).subscribe({
           next: () => {
             this.isRequestingCode = false;
-            this.successMessage = 'Código enviado al correo';
+            this.translate.get('SEND.EMAIL.CODE').subscribe((text: string) => this.successMessage = text);
           },
           error: (error: any) => {
             this.isRequestingCode = false;
@@ -83,11 +88,7 @@ export class ResetPasswordComponent {
         this.authService.resetPassword({code: this.code?.value, password: this.password?.value}).subscribe({
           next: () => {
             this.isLoading = false;
-            this.router.navigate(['/auth/login'], {
-              queryParams: { 
-                message: 'Password reset successful. Please login with your new password.'
-              }
-            });
+            this.router.navigate([ '/', this.selectedLanguage(), 'auth', 'login']);
           },
           error: (error: any) => {
             this.isLoading = false;

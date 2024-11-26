@@ -1,15 +1,22 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
+import { LocalizationService } from '../services/localization.service';
+import { Language } from '../../models/enums/language.enum';
 
 export const languageGuard: CanActivateFn = (route:ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const router = inject(Router);
-  const lang : string | null = route.paramMap.get('lang');
-  const validLanguages = ['es', 'en', 'fr'];
+  const localizationService = inject(LocalizationService);
   
-  if (typeof lang !== 'string' || !validLanguages.includes(lang)) {
-    //router.navigate(['/es/home']); // Redirigir al idioma por defecto
-    return false;
+  const urlLang = route.paramMap.get('lang');
+
+  if(!urlLang || !Object.values(Language).includes(urlLang as Language)) {
+    const defaultLanguage = localizationService.getCurrentLanguage();
+    
+    const redirectUrl = state.url.replace(/^\/[^\/]*/, '')
+    router.navigate([`/${defaultLanguage}${redirectUrl}`]);
   }
+
+  localizationService.setLanguage(urlLang as Language);
   
   return true;
 };

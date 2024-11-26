@@ -12,34 +12,54 @@ import { publicGuard } from './core/guards/public.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { authGuard } from './core/guards/auth.guard';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { roleGuard } from './core/guards/role.guard';
+import { UserFavoritesComponent } from './pages/user-favorites/user-favorites.component';
+import { languageGuard } from './core/guards/language.guard';
 
 export const routes: Routes = [
-    {path: 'home', component: HomeComponent}, 
-    {path: 'search', component: SearchComponent},
-    {path: 'auth', 
+  {
+    path: ':lang',
+    canActivate: [languageGuard],
+    children: [
+      { path: 'home', component: HomeComponent },
+      { path: 'search', component: SearchComponent },
+      {
+        path: 'auth',
         canActivate: [publicGuard],
         children: [
-            {
-                path: 'login', component: LoginComponent
-            },
-            {
-                path: 'register', component: RegisterComponent
-            },
-            {
-                path: 'verify-email', component: VerifyEmailComponent
-            },
-            {
-                path: 'reset-password', component: ResetPasswordComponent
-            },
-            {
-                path: '', redirectTo: 'login', pathMatch: 'full'
-            }
-        ]
-    },
-    {path: 'manga/:id', component: MangaComponent},
-    {path: "chapter/:id", component: ChapterComponent},
-    {path: "profile", canActivate:[authGuard], component: ProfileComponent},
-    {path: 'favorites', canActivate:[authGuard], component: FavoritesComponent},
-    {path: "", redirectTo: "home", pathMatch: "full"},
-    {path: "**", component: NotFoundComponent}
+          { path: 'login', component: LoginComponent },
+          { path: 'register', component: RegisterComponent },
+          { path: 'verify-email', component: VerifyEmailComponent },
+          { path: 'reset-password', component: ResetPasswordComponent },
+          { path: '', redirectTo: 'login', pathMatch: 'full' },
+        ],
+      },
+      { path: 'manga/:id', component: MangaComponent },
+      { path: 'chapter/:id', component: ChapterComponent },
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        component: ProfileComponent,
+      },
+      {
+        path: 'favorites',
+        canActivate: [authGuard],
+        component: FavoritesComponent,
+      },
+      {
+        path: 'dashboard',
+        data: { role: ['ROLE_ADMIN'] },
+        canActivate: [roleGuard, authGuard],
+        children: [
+          { path: '', component: DashboardComponent },
+          { path: 'user/:id/favorites', component: UserFavoritesComponent },
+        ],
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+    ],
+  },
+
+  { path: '', redirectTo: '/es/home', pathMatch: 'full' },
+  { path: '**', component: NotFoundComponent }
 ];

@@ -21,7 +21,7 @@
           <div class="card-body">
             <p class="card-text">
               {{ manga?.description }}
-              <span *ngIf="!manga?.description" i18n="@@noDescription">Sin descripción</span>
+              <span *ngIf="!manga?.description">{{"DESCRIPTION.NULL" | translate}}</span>
             </p>
             
           </div>
@@ -36,7 +36,7 @@
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden" i18n>Cargando...</span>
       </div>
-      <p class="mt-2" i18n>Cargando capítulos...</p>
+      <p class="mt-2" i18n>{{"CHAPTER.RELOAD" | translate}}</p>
     </div>
   
     <!-- Acordeón de Capítulos -->
@@ -52,7 +52,7 @@
             [attr.aria-expanded]="i === 0"
             [attr.aria-controls]="'collapse' + i">
             <span class="me-2">Volumen {{ volume.volumen }}</span>
-            <span class="badge bg-secondary">{{ volume.chapters.length }} capítulos</span>
+            <span class="badge bg-secondary">{{ volume.chapters.length }} {{"CHAPTERS" | translate}}</span>
           </button>
         </h2>
         
@@ -87,6 +87,6 @@
   
     <!-- Mensaje cuando no hay capítulos -->
     <div *ngIf="!loading && volumes.length === 0" class="alert alert-info mt-4" i18n>
-      No se encontraron capítulos para este manga.
+      {{"CHAPTER.NOT_FOUND" | translate}}
     </div>
   </div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Manga } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../core/services/manga.service';
@@ -8,22 +8,24 @@ import { PaginationComponent } from "../../components/pagination/pagination.comp
 import { SettingsService } from '../../core/services/settings.service';
 import { AppSettings } from '../../models/interfaces/settings.interface';
 import { combineLatest, Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LocalizationService } from '../../core/services/localization.service';
+import { Language } from '../../models/enums/language.enum';
 
 @Component({
   selector: 'app-search',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MangCardComponent,
-    PaginationComponent
+    PaginationComponent,
+    TranslatePipe
 ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  
-
+  selectedLanguage= signal<Language>(Language.ES);
   mangas: Manga[] = [];
   noResults = false;
   searchQuery: string = '';
@@ -39,8 +41,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     private mangaService: MangaService,
     private route: ActivatedRoute,
     private router: Router,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private localizationService: LocalizationService
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     // Initialize settings with default values
     this.settings = {
       dataSaver: false,

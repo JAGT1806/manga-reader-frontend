@@ -3,10 +3,10 @@
       <!-- Header -->
       <div class="text-center mb-4">
         <h2 class="text-dark fw-bold fs-4">
-          Inciar sesión
+          {{ 'LOGIN' | translate }}
         </h2>
         <p class="text-dark small">
-          Ingresa tus credenciales para iniciar sesión
+          {{'LOGIN.MESSAGE' | translate}}
         </p>
       </div>
   
@@ -14,7 +14,7 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <!-- Email Field -->
         <div class="mb-3 form-container">
-          <label for="email" class="form-label small fw-semibold text-dark">Correo</label>
+          <label for="email" class="form-label small fw-semibold text-dark">{{'EMAIL' | translate}}</label>
           <div class="position-relative">
             <input
               type="email"
@@ -26,15 +26,15 @@
             />
             <!-- Email Error Messages -->
             <div *ngIf="email?.invalid && email?.touched" class="invalid-feedback small">
-              <span *ngIf="email?.errors?.['required']">El email es necesario</span>
-              <span *ngIf="email?.errors?.['pattern']">Por favor ingresar un email valido</span>
+              <span *ngIf="email?.errors?.['required']">{{'COMMON.REQUIRED' | translate}}</span>
+              <span *ngIf="email?.errors?.['pattern']">{{'EMAIL.INVALID' | translate}}</span>
             </div>
           </div>
         </div>
   
         <!-- Password Field -->
         <div class="mb-3">
-          <label for="password" class="form-label small fw-semibold text-dark">Contraseña</label>
+          <label for="password" class="form-label small fw-semibold text-dark">{{'PASSWORD' | translate}}</label>
           <div class="input-group">
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -54,8 +54,8 @@
             
             <!-- Password Error Messages -->
             <div *ngIf="password?.invalid && password?.touched" class="invalid-feedback small">
-              <span *ngIf="password?.errors?.['required']">La contraseña es necesaria</span>
-              <span *ngIf="password?.errors?.['minlength']">La contraseña mínimo debe tener 6 caracteres</span>
+              <span *ngIf="password?.errors?.['required']">{{'COMMON.REQUIRED' | translate}}</span>
+              <span *ngIf="password?.errors?.['minlength']">{{'PASSWORD.REQUIRED' | translate}}</span>
             </div>
             
           </div>
@@ -67,20 +67,20 @@
         </div>
 
         <div class="text-center small mt-3">
-          <a routerLink="/auth/register" class="text-primary text-decoration-none">
-            Registrarse
+          <a [routerLink]="['/', selectedLanguage, 'auth', 'register']" class="text-primary text-decoration-none">
+            {{"SIGNUP" | translate}}
           </a>
         </div>
 
         <div class="text-center small mt-3">
-          <a routerLink="/auth/verify-email" class="text-primary text-decoration-none">
-            Validar cuenta
+          <a [routerLink]="['/', selectedLanguage, 'auth', 'verify-email']" class="text-primary text-decoration-none">
+            {{'VALIDATE.ACCOUNT' | translate}}
           </a>
         </div>
   
         <div class="text-center small mt-3">
-          <a routerLink="/auth/reset-password" class="text-primary text-decoration-none">
-            ¿Olvidaste tu contraseña?
+          <a [routerLink]="['/', selectedLanguage, 'auth', 'reset-password']" class="text-primary text-decoration-none">
+            {{'FORGOT.PASSWORD' | translate}}
           </a>
         </div>
   
@@ -91,7 +91,7 @@
             [disabled]="loginForm.invalid || isLoading"
             class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
           >
-            <span *ngIf="!isLoading">Inciar sesión</span>
+            <span *ngIf="!isLoading">{{'LOGIN' | translate}}</span>
             <div *ngIf="isLoading" class="spinner-border spinner-border-sm ms-2"></div>
           </button>
         </div>

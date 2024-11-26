@@ -24,11 +24,10 @@ export class FavoritesService {
     return this.http.get<ListFavoritesResponse>(`${this.APIURL}`, { params });
   }
 
-  getFavoritesByUser(userId: number, offset = 0, limit = 12): Observable<ListFavoritesResponse> {
+  getFavoritesByUser(offset = 0, limit = 12): Observable<ListFavoritesResponse> {
     const userId1 = this.authService.getUserProfile()?.idUser;
 
     const params = new HttpParams()
-    .set('id', userId1 || userId)
     .set('offset', offset)
     .set('limit', limit);
     return this.http.get<ListFavoritesResponse>(`${this.APIURL}/${userId1}`, { params });

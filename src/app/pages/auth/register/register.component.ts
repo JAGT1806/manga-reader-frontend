@@ -1,19 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { ErrorResponse } from '../../../models/interfaces/error.interface';
+import { Language } from '../../../models/enums/language.enum';
+import { LocalizationService } from '../../../core/services/localization.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslatePipe],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnDestroy {
+  selectedLanguage= signal<Language>(Language.ES);
   registerForm: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
@@ -23,8 +27,10 @@ export class RegisterComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private localizationService: LocalizationService,
     private router: Router
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.registerForm = this.fb.group({
       email: ['', [
         Validators.required,

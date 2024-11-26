@@ -12,7 +12,7 @@ export class NavigationService {
   handleLogout() {
     const currentUrl = this.router.url;
 
-    const protectedRoutes = ['/dashboard', '/profile'];
+    const protectedRoutes = ['/dashboard', '/profile', '/dashboard'];
 
     const refreshRoutes = ['/manga'];
 

@@ -39,6 +39,7 @@ export interface UserDTO {
     username: string;
     email: string;
     rol: string[];
+    enabled: boolean;
     dateCreated: string;
     dateUpdated: string;
     imageProfile: string | null;

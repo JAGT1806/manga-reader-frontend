@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { ChapterFeed, Manga } from '../../models/interfaces/manga.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../core/services/manga.service';
@@ -8,15 +8,19 @@ import { SettingsService } from '../../core/services/settings.service';
 import { AppSettings } from '../../models/interfaces/settings.interface';
 import { AuthService } from '../../core/services/auth.service';
 import { FavoritesService } from '../../core/services/favorites.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Language } from '../../models/enums/language.enum';
+import { LocalizationService } from '../../core/services/localization.service';
 
 @Component({
   selector: 'app-manga',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './manga.component.html',
   styleUrl: './manga.component.css'
 })
 export class MangaComponent implements OnInit, OnDestroy {
+  selectedLanguage= signal<Language>(Language.ES);
   manga: Manga | null = null;
   volumes: { volumen: string; chapters: ChapterFeed[] }[] = [];
   loading: boolean = false;
@@ -30,8 +34,10 @@ export class MangaComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private favoriteService: FavoritesService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private localizationService: LocalizationService
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     // Initialize settings with default values
     this.settings = {
       dataSaver: false,
@@ -43,7 +49,7 @@ export class MangaComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const mangaId = this.route.snapshot.paramMap.get('id');
     if (!mangaId) {
-      this.router.navigate(['/home']);
+      this.router.navigate(['/', this.selectedLanguage(), 'home']);
       return;
     }
 
@@ -114,7 +120,7 @@ export class MangaComponent implements OnInit, OnDestroy {
   }
 
   navigateToChapter(chapterId: string): void {
-    this.router.navigate(['/chapter', chapterId]);
+    this.router.navigate(['/', this.selectedLanguage(), 'chapter', chapterId]);
   }
 
   private sortChapters(chapters: ChapterFeed[]): ChapterFeed[] {

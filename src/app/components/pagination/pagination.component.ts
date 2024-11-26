@@ -97,7 +97,7 @@ export class PaginationComponent {
   }
 
   goToPage(): void {
-    if (this.pageInput && this.pageInput >= 1 && this.pageInput <= this.totalPages) {
+    if (this.pageInput && this.pageInput >= 1 && this.pageInput <= this.totalPages && this.pageInput !== this.currentPage) {
       this.onPageChange(this.pageInput);
       this.showingStartInput = false;
       this.showingEndInput = false;

@@ -1,19 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { ErrorResponse } from '../../../models/interfaces/error.interface';
+import { Language } from '../../../models/enums/language.enum';
+import { LocalizationService } from '../../../core/services/localization.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnDestroy {
+  selectedLanguage= signal<Language>(Language.ES);
   loginForm : FormGroup;
   isLoading = false;
   errorMessage : string | null = null;
@@ -22,8 +26,11 @@ export class LoginComponent implements OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private localizationService: LocalizationService
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
+
     this.loginForm = this.fb.group({
       email: ['', [
         Validators.required,
@@ -32,6 +39,7 @@ export class LoginComponent implements OnDestroy {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
+  
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -45,7 +53,8 @@ export class LoginComponent implements OnDestroy {
       this.subscriptions.add(
         this.authService.login(this.loginForm.value).subscribe({
           next: () => {
-            this.isLoading = false;          },
+            this.isLoading = false;
+          },
           error: (error: any) => {
             this.isLoading = false;
             this.errorMessage = error;

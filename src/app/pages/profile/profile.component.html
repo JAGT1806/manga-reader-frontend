@@ -5,6 +5,15 @@
           <div class="card-body">
             <h1 class="card-title h3 mb-4">Mi Perfil</h1>
 
+            <div class="d-flex justify-content-end mb-3">
+              <button *ngIf="canDeleteUser"
+                      type="button"
+                      class="btn btn-danger"
+                      (click)="onDelete()"
+                      [disabled]="isDeleting">
+                <i class="bi bi-trash"></i> Borrar cuenta
+              </button>
+            </div>
             <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
               <!-- Imagen de perfil -->
               <div class="text-center mb-4">

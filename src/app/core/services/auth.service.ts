@@ -183,6 +183,8 @@ export class AuthService {
 
     if(!currentUser) return false;
 
+    console.log('currentUser:', currentUser);
+
     return currentUser.roles.includes(role) || currentUser.user.rol.includes(role);
   }
 

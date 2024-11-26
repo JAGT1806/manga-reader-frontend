@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:8080/api',
+    apiUrl: 'https://localhost:9000/api',
     mangadexCoverUrl: 'https://uploads.mangadex.org/covers/'
 }

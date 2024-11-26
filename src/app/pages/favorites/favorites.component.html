@@ -1,13 +1,14 @@
 <div class="container mt-4">
-    <h1 class="mb-4">Mis Favoritos</h1>
+    <h1 class="mb-4">{{"MY,FAVORITES" | translate}}</h1>
     
     <div *ngIf="favorites.length === 0" class="alert alert-info text-center">
-      No tienes mangas marcados como favoritos aún.
+      {{"FAVORITES.NULL" | translate}}
     </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4" *ngIf="favorites.length > 0">
-      <div class="col" *ngFor="let favorite of favorites">
-        <app-mang-card 
+      <div class="col-md-4 mb-4 d-flex align-items-stretch" *ngFor="let favorite of favorites">
+        <div class="position-relative">
+          <app-mang-card 
           [manga]="{
             id: favorite.idManga, 
             title: favorite.nameManga, 
@@ -18,11 +19,18 @@
             coverUrl: favorite.urlImage
           }"
         ></app-mang-card>
+        <button *ngIf="canDeleteFavorites"
+                  class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                  (click)="onDeleteFavorite(favorite)"
+                  [disabled]="isDeleting">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
 
     <app-pagination 
-      *ngIf="totalPages > 1"
+      *ngIf="totalPages >= 1"
       [currentPage]="currentPage"
       [totalPages]="totalPages"
       (pageChange)="onPageChange($event)"

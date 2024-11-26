@@ -1,19 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ErrorResponse } from '../../../models/interfaces/error.interface';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Language } from '../../../models/enums/language.enum';
+import { LocalizationService } from '../../../core/services/localization.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslatePipe],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.css'
 })
 export class VerifyEmailComponent {
+  selectedLanguage= signal<Language>(Language.ES);
   verifyForm: FormGroup;
   isLoading = false;
   isResending = false;
@@ -29,8 +32,11 @@ export class VerifyEmailComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private localizationService: LocalizationService,
+    private translate: TranslateService,
     private router: Router
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.verifyForm = this.fb.group({
       code: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [
@@ -88,7 +94,7 @@ export class VerifyEmailComponent {
         this.authService.resendVerification({ email: this.email.value }).subscribe({
           next: () => {
             this.isResending = false;
-            this.successMessage = 'Código de validación enviado al correo';
+            this.translate.get('SEND.EMAIL.CODE').subscribe((text: string) => this.successMessage = text);
           },
           error: (error: any) => {
             this.isResending = false;

@@ -4,6 +4,14 @@ export interface UserResponse {
     message: string;
     data: UserDTO;
   }
+
+export interface ListUserResponse {
+  message: string;
+  data: UserDTO[];
+  offset: number;
+  limit: number;
+  total: number;
+}
   
   export interface ImageDTO {
     id: number;
@@ -38,4 +46,14 @@ export interface UpdateUserRequest {
 export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
+}
+
+// Interfaces para el admin
+export interface UsersRequest {
+  username?: string,
+  email?: string,
+  role?: string,
+  offset?: number,
+  limit?: number,
+  enabled?: boolean | null
 }

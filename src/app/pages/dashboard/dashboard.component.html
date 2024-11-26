@@ -1,1 +1,122 @@
-<p>dashboard works!</p>
+<!-- user-management.component.html -->
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h2>{{ 'USER_MANAGEMENT_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <input 
+        type="text" 
+        class="form-control" 
+        [(ngModel)]="filters.username"
+        (ngModelChange)="onFiltersChange()"
+        [placeholder]="'USER.SEARCH_BY_USERNAME' | translate"
+        [attr.aria-label]="'USERNAME' | translate">
+    </div>
+    <div class="col-md-3">
+      <input 
+        type="email" 
+        class="form-control" 
+        [(ngModel)]="filters.email"
+        (ngModelChange)="onFiltersChange()"
+        [placeholder]="'USER.SEARCH_BY_EMAIL' | translate"
+        [attr.aria-label]="'EMAIL' | translate">
+    </div>
+    <div class="col-md-3">
+      <select 
+        class="form-select" 
+        [(ngModel)]="filters.enabled"
+        (ngModelChange)="onFiltersChange()"
+        [attr.aria-label]="'USER.STATUS' | translate">
+        <option [ngValue]="null">{{ 'ALL_STATUSES' | translate }}</option>
+        <option [ngValue]="true">{{ 'ENABLED_USERS' | translate }}</option>
+        <option [ngValue]="false">{{ 'DISABLED_USERS' | translate }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select 
+        class="form-select" 
+        [(ngModel)]="filters.role"
+        (ngModelChange)="onFiltersChange()"
+        [attr.aria-label]="'USER.ROLE' | translate">
+        <option value="">{{ 'ALL_ROLES' | translate }}</option>
+        <option value="ROLE_ADMIN">{{ 'ADMIN_ROLE' | translate }}</option>
+        <option value="ROLE_USER">{{ 'USER_ROLE' | translate }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- User Table -->
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'ID' | translate }}</th>
+          <th scope="col">{{ 'USERNAME' | translate }}</th>
+          <th scope="col">{{ 'EMAIL' | translate }}</th>
+          <th scope="col">{{ 'ROLES' | translate }}</th>
+          <th scope="col">{{ 'CREATION_DATE' | translate }}</th>
+          <th scope="col">{{ 'STATUS' | translate }}</th>
+          <th scope="col">{{ 'ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{user.idUser}}</td>
+          <td>
+            <img [src]="user.imageProfile || '/assets/default-avatar.png'" 
+                 class="rounded-circle me-2" 
+                 width="30" 
+                 height="30" 
+                 [alt]="user.username">
+            {{user.username}}
+          </td>
+          <td>{{user.email}}</td>
+          <td>
+            <span *ngFor="let role of user.rol" 
+                  class="badge me-1" 
+                  [class.bg-primary]="role === 'ROLE_USER'"
+                  [class.bg-danger]="role === 'ROLE_ADMIN'">
+              {{ role === 'ROLE_USER' ? ('USER_ROLE' | translate) : ('ADMIN_ROLE' | translate) }}
+            </span>
+          </td>
+          <td>{{user.dateCreated | date:'dd/MM/yyyy'}}</td>
+          <td>
+            <span class="badge" 
+                  [class.bg-success]="isUserEnabled(user)"
+                  [class.bg-secondary]="!isUserEnabled(user)">
+              {{ isUserEnabled(user) ? ('ENABLED' | translate) : ('DISABLED' | translate) }}
+            </span>
+          </td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-info me-2" 
+                  [routerLink]="['/dashboard/user', user.idUser, 'favorites']"
+                  [attr.title]="'VIEW_FAVORITES' | translate">
+                  <i class="bi bi-heart"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" 
+                      (click)="onDeleteUser(user)"
+                      [disabled]="isDeleting"
+                      [attr.title]="'DELETE_USER' | translate">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <app-pagination 
+    *ngIf="total > 0"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div>

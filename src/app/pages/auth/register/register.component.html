@@ -3,10 +3,10 @@
       <!-- Header -->
       <div class="text-center mb-4">
         <h2 class="text-dark fw-bold fs-4">
-          Registro
+          {{'REGISTER' | translate}}
         </h2>
         <p class="text-dark small">
-          ¡Disfruta nuestra comunidad!
+          {{'REGISTER.MESSAGE' | translate}}
         </p>
       </div>
   
@@ -14,7 +14,7 @@
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <!-- Email Field -->
         <div class="mb-3">
-          <label for="email" class="form-label small fw-semibold text-dark">Correo electrónico</label>
+          <label for="email" class="form-label small fw-semibold text-dark">{{'EMAIL' | translate }}</label>
           <input
             type="email"
             id="email"
@@ -24,14 +24,14 @@
             placeholder="your.email@example.com"
           />
           <div *ngIf="email?.invalid && email?.touched" class="invalid-feedback small">
-            <span *ngIf="email?.errors?.['required']">Correo necesario</span>
-            <span *ngIf="email?.errors?.['pattern']">Por favor ingresar un correo valido</span>
+            <span *ngIf="email?.errors?.['required']">{{'COMMON.REQUIRED' | translate}}</span>
+            <span *ngIf="email?.errors?.['pattern']">{{'EMAIL.INVALID' | translate}}</span>
           </div>
         </div>
   
         <!-- Username Field -->
         <div class="mb-3">
-          <label for="username" class="form-label small fw-semibold text-dark">Nombre de usuario</label>
+          <label for="username" class="form-label small fw-semibold text-dark">{{'USERNAME' | translate}}</label>
           <input
             type="text"
             id="username"
@@ -41,15 +41,15 @@
             placeholder="coolmanga123"
           />
           <div *ngIf="username?.invalid && username?.touched" class="invalid-feedback small">
-            <span *ngIf="username?.errors?.['required']">Nombre de usuario necesario</span>
-            <span *ngIf="username?.errors?.['minlength']">El nombre de usuario debe tener al menos 3 caracteres</span>
-            <span *ngIf="username?.errors?.['maxlength']">El nombre de usuario debe tener menos de 20 caracteres</span>
+            <span *ngIf="username?.errors?.['required']">{{'COMMON.REQUIRED' | translate}}</span>
+            <span *ngIf="username?.errors?.['minlength']">{{'USERNAME.MIN_LENGTH' | translate}}'</span>
+            <span *ngIf="username?.errors?.['maxlength']">{{'USERNAME.MAX_LENGTH' | translate}}</span>
           </div>
         </div>
   
         <!-- Password Field -->
         <div class="mb-3">
-          <label for="password" class="form-label small fw-semibold text-dark">Password</label>
+          <label for="password" class="form-label small fw-semibold text-dark">{{'PASSWORD' | translate}}</label>
           <div class="input-group">
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -67,14 +67,6 @@
             <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
           </button>
           </div>
-          <div class="form-text small text-danger mt-1">
-            <ul class="list-unstyled mb-0">
-              <li *ngFor="let requirement of getPasswordRequirements()" class="d-flex align-items-center">
-                <i class="fas fa-times text-danger me-2"></i>
-                {{ requirement }}
-              </li>
-            </ul>
-          </div>
         </div>
   
         <!-- Error Message -->
@@ -89,25 +81,22 @@
             [disabled]="registerForm.invalid || isLoading"
             class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
           >
-            <span *ngIf="!isLoading">Crear cuenta</span>
+            <span *ngIf="!isLoading">{{'CREATE.ACCOUNT' | translate}}</span>
             <div *ngIf="isLoading" class="spinner-border spinner-border-sm ms-2"></div>
           </button>
         </div>
 
         <div class="text-center small mt-3">
-          <a routerLink="/auth/verify-email" class="text-primary text-decoration-none">
-            Validar cuenta
+          <a [routerLink]="['/', selectedLanguage, 'auth', 'verify-email']" class="text-primary text-decoration-none">
+            {{'VALIDATE.ACCOUNT' | translate}}
           </a>
         </div>
   
         <!-- Login Link -->
         <div class="text-center small mt-3">
-          <p class="text-dark">
-            ¿Ya tienes una cuenta?
-            <a routerLink="/auth/login" class="text-primary text-decoration-none">
-              Ingresa aquí
+            <a [routerLink]="['/', selectedLanguage, 'auth']" class="text-primary text-decoration-none">
+              {{'LOGIN' | translate}}
             </a>
-          </p>
         </div>
       </form>
     </div>

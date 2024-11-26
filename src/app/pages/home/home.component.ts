@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Manga } from '../../models/interfaces/manga.interface';
 import { MangaService } from '../../core/services/manga.service';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -8,6 +8,9 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
 import { SettingsService } from '../../core/services/settings.service';
 import { Subscription } from 'rxjs';
 import { AppSettings } from '../../models/interfaces/settings.interface';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Language } from '../../models/enums/language.enum';
+import { LocalizationService } from '../../core/services/localization.service';
 
 @Component({
   selector: 'app-home',
@@ -15,12 +18,14 @@ import { AppSettings } from '../../models/interfaces/settings.interface';
   imports: [
     CommonModule,
     MangCardComponent,
-    PaginationComponent
+    PaginationComponent,
+    TranslatePipe
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  selectedLanguage= signal<Language>(Language.ES);
   mangas: Manga[] = [];
   currentPage: number = 1;
   pageSize: number = 12;
@@ -29,14 +34,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   settings: AppSettings;
   private subscriptions = new Subscription();
-  private maxPages = 833; // Definimos el máximo de páginas
+  private maxPages = 9988; // Definimos el máximo de páginas
 
   constructor(
     private mangaService: MangaService,
     private settingsService: SettingsService,
+    private localizationService: LocalizationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.selectedLanguage.set(this.localizationService.getCurrentLanguage());
     this.settings = {
       dataSaver: false,
       nfswEnabled: false,
@@ -84,7 +91,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private redirectToPage(page: number): void {
-    this.router.navigate(['/home'], {
+    const currentLang = this.route.snapshot.paramMap.get('lang') || 'es';
+    this.router.navigate(['/', currentLang, 'home'], {
       queryParams: { page },
       replaceUrl: true
     });
@@ -94,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.isLoading) return;
 
     this.isLoading = true;
-    const offset = (this.currentPage - 1) * this.pageSize;
+    const offset = (this.currentPage - 1);
 
     this.subscriptions.add(
       this.mangaService.getAllMangas(
@@ -106,7 +114,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.mangas = response.data;
           this.noResults = this.mangas.length === 0;
-          this.totalPages = Math.min(Math.ceil(response.total / this.pageSize), this.maxPages);
+          console.log('Response total: ', response.offset, " ", response.limit, " ",  response.total);
+          this.totalPages = response.total;
         },
         error: (error) => {
           console.error('Error loading mangas:', error);
